@@ -1,0 +1,18 @@
+Same follow-up as upstream. Two more Gate 2 lines had no reachable False
+path.
+
+cold_process fired on K=cold maceration alone regardless of whether the
+entry's own recipe reaches a Calefac step. Checked directly: n_ops<5 never
+produces one (Calefac is step_templates index 4), about a seventh of all
+entries. Gated the check on n_ops>=5. Left it always-True once gated,
+since that's ENGINE.md's own argued claim, not a coincidence of the
+generator's random ranges.
+
+vessel_split was a bare True for the volatile-exempt branch, with no
+numeric constraint behind it anywhere in ENGINE.md. Dropped it from checks,
+kept the exemption as a reason string.
+
+Reran the distribution after both changes: vessel_capacity and
+vessel_fused both come back True and False across a real sample.
+cold_process comes back True only, which is now the accurate state to
+report given what it's actually checking.
