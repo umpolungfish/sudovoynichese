@@ -39,22 +39,22 @@ from classifier import compute_fingerprint, CANONICAL_FINGERPRINTS, match_canoni
 from tokens import Token
 
 # ⊢⊡⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊡⊣
-# COMPLETE EVA GLYPH INVENTORY  (preserved from v2)
+# COMPLETE EVA GLYPH INVENTORY 
 # ⊢⊡⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊡⊣
 
 EVA_GLYPHS: dict[str, tuple[int, str, str]] = {
-    'o':  (0,  '\U0001045B', 'VINIT — Dimensionality'),
-    'p':  (1,  '\U00010461', 'TANCH — Topology'),
-    'e':  (2,  '\U00010469', 'AFWD  — Coupling'),
-    'a':  (3,  '\U00010457', 'AREV  — Parity'),
-    'd':  (4,  '\U00010471', 'CLINK — Fidelity'),
-    's':  (5,  '\U00010458', 'IMSCRIB — Kinetics'),
-    'ch': (6,  '\U0001045A', 'FSPLIT — Cardinality'),
-    'sh': (7,  '\U0001045D', 'FFUSE  — Composition'),
-    't':  (8,  '\u2609',     'EVALT  — Criticality'),
-    'k':  (9,  '\U00010453', 'EVALF  — Chirality'),
-    'r':  (10, '\U00010473', 'ENGAGR — Stoichiometry'),
-    'y':  (11, '\U00010477', 'IFIX   — Winding'),
+    'o':  (0,  '\U0001045B', '⊢'),
+    'p':  (1,  '\U00010461', '⊣'),
+    'e':  (2,  '\U00010469', '≻'),
+    'a':  (3,  '\U00010457', '≺'),
+    'd':  (4,  '\U00010471', '⋈'),
+    's':  (5,  '\U00010458', '⊙'),
+    'ch': (6,  '\U0001045A', '∈'),
+    'sh': (7,  '\U0001045D', '∋'),
+    't':  (8,  '\u2609',     '⊤'),
+    'k':  (9,  '\U00010453', '⊥'),
+    'r':  (10, '\U00010473', '⊞'),
+    'y':  (11, '\U00010477', '⊡'),
     'l':  (12, '\U00010450', 'ligature/infix'),
     'i':  (13, '\U00010451', 'ligature/infix'),
     'n':  (14, '\U00010452', 'nasal/terminal'),
@@ -263,7 +263,7 @@ def parse_ivtff(
     return dict(section_words)
 
 # ⊢⊡⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊡⊣
-# STATISTICS (preserved from v2)
+# STATISTICS
 # ⊢⊡⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊡⊣
 
 class CorpusStats(NamedTuple):
