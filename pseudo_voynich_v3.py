@@ -551,10 +551,10 @@ class Primitive(Enum):
     R = auto()   # ≻ — pattern-completion class
     P = auto()   # ≺ — solvent system
     F = auto()   # ⋈ — concentration target
-    K = auto()   # ⊙ — extraction process
+    K = auto()   # ⊤ — extraction process
     G = auto()   # ∈ — comminution
     C = auto()   # ∋ — fraction combination
-    PHI = auto() # ⊤ — endpoint criterion
+    PHI = auto() # ⊙ — endpoint criterion
     H = auto()   # ⊥ — clarification protocol
     S = auto()   # ⊞ — drug:solvent ratio
     W = auto()   # ⊡ — extraction cycles
