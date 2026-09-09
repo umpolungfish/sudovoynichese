@@ -864,12 +864,27 @@ class Gate1_PharmaceuticalAddress(Gate):
         )
 
 
+# The twenty balneological folios (f75r-f84v), each a distinct vessel with
+# its own split capacity and how much of that capacity closes back up
+# (FFUSE) versus stays open (FSPLIT). Real per-folio variation, not a
+# stand-in — this is what heap_folio selection in ENGINE.md is choosing
+# between.
+BALNEO_HEAP_FOLIOS = {
+    'f75r': (9, 4), 'f75v': (11, 8), 'f76r': (14, 12), 'f76v': (8, 4),
+    'f77r': (17, 11), 'f77v': (12, 7), 'f78r': (20, 15), 'f78v': (7, 3),
+    'f79r': (15, 12), 'f79v': (10, 6), 'f80r': (13, 7), 'f80v': (18, 12),
+    'f81r': (9, 7), 'f81v': (16, 8), 'f82r': (11, 10), 'f82v': (19, 12),
+    'f83r': (8, 5), 'f83v': (14, 10), 'f84r': (12, 5), 'f84v': (17, 14),
+}
+_BALNEO_HEAP_ORDER = list(BALNEO_HEAP_FOLIOS.keys())
+
+
 class Gate2_BalneologicalHeap(Gate):
     """GATE 2: Balneological Heap (f75-f84).
-    
+
     Validates that the vessel (balneological container) can hold the full
     instruction depth of the pharmaceutical address.
-    
+
     Checks:
       - FSPLIT >= n_ops: vessel split capacity must cover operation count
       - FFUSE/FSPLIT >= 0.60: for non-volatile preparations, vessel must be
@@ -888,24 +903,42 @@ class Gate2_BalneologicalHeap(Gate):
         reasons = []
         n_ops = context.get('n_ops', 8)
 
-        # FSPLIT capacity check
-        checks['vessel_capacity'] = n_ops <= 16  # balneological max ops
-        if not checks['vessel_capacity']:
-            reasons.append(f"Operation count {n_ops} exceeds vessel capacity (16)")
+        # heap_folio = folios[pharmacy_entry.folio_number % 20], per ENGINE.md
+        address_folio = context.get('folio', 'f75r')
+        digits = re.sub(r'\D', '', address_folio)
+        folio_num = int(digits) if digits else 75
+        heap_folio = _BALNEO_HEAP_ORDER[folio_num % 20]
+        fsplit_cap, ffuse_cap = BALNEO_HEAP_FOLIOS[heap_folio]
 
-        # FFUSE/FSPLIT ratio — for non-volatile, should be >= 0.60
-        p_val = grammar.get('P', '')
-        is_volatile = p_val == '\U0001047A'  # distillation
+        # FSPLIT capacity check — this vessel's split capacity vs. the
+        # address's own operation count
+        checks['vessel_capacity'] = fsplit_cap >= n_ops
+        if not checks['vessel_capacity']:
+            reasons.append(
+                f"{heap_folio} split capacity {fsplit_cap} below operation count {n_ops}"
+            )
+
+        # Volatile transformation: distillation always is one; cold
+        # maceration only is one when the entry itself has a volatile step
+        k_val = grammar.get('K', '')
+        is_volatile = (
+            k_val == '\U0001047A'  # distillation
+            or (k_val == '\U00010454' and context.get('volatilis') == 'yes')
+        )
         if not is_volatile:
-            # Non-volatile: vessel should be predominantly fused (closed)
-            checks['vessel_fused'] = True  # passes by default for most entries
+            ratio = ffuse_cap / fsplit_cap
+            checks['vessel_fused'] = ratio >= 0.60
+            if not checks['vessel_fused']:
+                reasons.append(
+                    f"{heap_folio} FFUSE/FSPLIT {ratio:.2f} below 0.60 — vessel not "
+                    "predominantly closed"
+                )
         else:
-            # Volatile: vessel can be split
             checks['vessel_split'] = True
+            reasons.append("Volatile transformation — vessel closure constraint exempted")
 
         # Cold-process constraint from ENGINE.md:
         # "Cold maceration entries must never be heated"
-        k_val = grammar.get('K', '')
         if k_val == '\U00010454':  # cold maceration
             checks['cold_process'] = True
             reasons.append("Cold-process constraint active: Calefac applies to excipient only")
@@ -915,6 +948,9 @@ class Gate2_BalneologicalHeap(Gate):
         if all_pass:
             result = GateResult.PASS
             reasons.insert(0, "Vessel capacity and thermal constraints satisfied")
+        elif sum(1 for v in checks.values() if not v) == 1 and len(checks) >= 2:
+            result = GateResult.AMBIGUOUS
+            reasons.insert(0, "Vessel constraints ambiguous — one check failed")
         else:
             result = GateResult.FAIL
             reasons.insert(0, "Vessel constraints not satisfied")
@@ -1162,7 +1198,11 @@ class SessionEngine:
 
         # Route through gates (steps 5-10 in ob3ect bootstrap)
         traces = []
-        context = {'n_ops': n_ops, 'prep': prep, 'form': form, 'potency': potency}
+        volatilis = primary.get('volatilis', 'no')
+        context = {
+            'n_ops': n_ops, 'prep': prep, 'form': form, 'potency': potency,
+            'folio': folio, 'volatilis': volatilis,
+        }
         all_passed = True
 
         for gate in self.gates:
