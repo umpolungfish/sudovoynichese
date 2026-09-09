@@ -66,9 +66,9 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 from classifier import compute_fingerprint, CANONICAL_FINGERPRINTS, match_canonical
 from tokens import Token
 
-# ============================================================================
+# ⊢⊡⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊡⊣
 # COMPLETE EVA GLYPH INVENTORY  (preserved from v2)
-# ============================================================================
+# ⊢⊡⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊡⊣
 
 EVA_GLYPHS: dict[str, tuple[int, str, str]] = {
     'o':  (0,  '\U0001045B', 'VINIT — Dimensionality'),
@@ -125,9 +125,9 @@ TOKEN_TO_SHAVIAN: dict[int, str] = {
     9: '\U00010453', 10: '\U00010473', 11: '\U00010477',
 }
 
-# ============================================================================
+# ⊢⊡⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊡⊣
 # SIX-SECTION MODEL
-# ============================================================================
+# ⊢⊡⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊡⊣
 
 SECTIONS = [
     'botanical', 'astronomical', 'cosmological',
@@ -161,7 +161,7 @@ def classify_folio(folio: str) -> str:
         return 'pharmaceutical'
     return 'recipe'
 
-# ============================================================================
+# ⊢⊡⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊡⊣
 # IVTFF PARSING
 #
 # The IVTFF format is genuinely interlinear: one physical manuscript line
@@ -197,7 +197,7 @@ def classify_folio(folio: str) -> str:
 # the same length (the file's own header, section "Filler characters");
 # per that section a bare '!' denotes zero characters, so deleting it is
 # the documented reading, not an approximation.
-# ============================================================================
+# ⊢⊡⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊡⊣
 
 # H is Takahashi's, the only complete transcription of the whole
 # manuscript; the rest are partial, page-by-page efforts by different
@@ -316,9 +316,9 @@ def parse_ivtff(
                 section_words[section].append(toks)
     return dict(section_words)
 
-# ============================================================================
+# ⊢⊡⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊡⊣
 # STATISTICS (preserved from v2)
-# ============================================================================
+# ⊢⊡⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊡⊣
 
 class CorpusStats(NamedTuple):
     length_dist: dict
@@ -372,9 +372,9 @@ def extract_stats(section_words: dict[str, list[list[int]]]) -> CorpusStats:
     return CorpusStats(length_dist, unigram, bigrams, pos_freq, word_vocab,
                        global_vocab, total_tokens)
 
-# ============================================================================
+# ⊢⊡⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊡⊣
 # METRICS
-# ============================================================================
+# ⊢⊡⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊡⊣
 
 def zipf_exponent(freq: Counter) -> float:
     ranked = sorted(freq.values(), reverse=True)
@@ -472,9 +472,9 @@ def spectral_gap(matrix: dict[int, dict[int, float]]) -> float:
         pi2 = new2
     return max(0.0, 1.0 - decay)
 
-# ============================================================================
+# ⊢⊡⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊡⊣
 # IMSCRIBr FINGERPRINTING
-# ============================================================================
+# ⊢⊡⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊡⊣
 
 def _dominant_cycle_8(matrix: dict[int, dict[int, float]]) -> tuple[int, ...] | None:
     best: list[int] = []
@@ -538,26 +538,26 @@ def section_fingerprint(words: list[list[int]]) -> tuple:
         canon = f"~{nearest}"
     return fp, canon
 
-# ============================================================================
+# ⊢⊡⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊡⊣
 # V3 — PHARMACEUTICAL GRAMMAR  (ENGINE.md §Primitive-to-Protocol Mapping)
-# ============================================================================
+# ⊢⊡⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊡⊣
 
 # Shavian values for each primitive in the pharmaceutical context
 # From ENGINE.md tables: EDA, E4, EDC, EDE, EDF, E7, E93, E92, E99, E26, E83, E9A
 
 class Primitive(Enum):
-    D = auto()   # Dimensionality — registration depth
-    T = auto()   # Topology — plant material specification
-    R = auto()   # Recognition — pattern-completion class
-    P = auto()   # Parity — solvent system
-    F = auto()   # Fidelity — concentration target
-    K = auto()   # Kinetics — extraction process
-    G = auto()   # Granularity — comminution
-    C = auto()   # Composition — fraction combination
-    PHI = auto() # Criticality — endpoint criterion
-    H = auto()   # Chirality — clarification protocol
-    S = auto()   # Stoichiometry — drug:solvent ratio
-    W = auto()   # Winding — extraction cycles
+    D = auto()   # ⊢ — registration depth
+    T = auto()   # ⊣ — plant material specification
+    R = auto()   # ≻ — pattern-completion class
+    P = auto()   # ≺ — solvent system
+    F = auto()   # ⋈ — concentration target
+    K = auto()   # ⊙ — extraction process
+    G = auto()   # ∈ — comminution
+    C = auto()   # ∋ — fraction combination
+    PHI = auto() # ⊤ — endpoint criterion
+    H = auto()   # ⊥ — clarification protocol
+    S = auto()   # ⊞ — drug:solvent ratio
+    W = auto()   # ⊡ — extraction cycles
 
 # ── Primitive value tables (Shavian → pharmaceutical meaning) ──
 
@@ -777,9 +777,9 @@ DEFAULT_FAMILY_GRAMMAR = {
     'G': '\U00010454', 'PHI': '\u2299',
 }
 
-# ============================================================================
+# ⊢⊡⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊡⊣
 # V3 — GATE CLASSES  (from ob3ect: FSPLIT → EVALT/EVALF → FFUSE pattern)
-# ============================================================================
+# ⊢⊡⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊡⊣
 
 class GateResult(Enum):
     """Outcome of a single gate evaluation.
@@ -1051,9 +1051,9 @@ class Gate3_AstronomicalWinding(Gate):
             primitive_checks=checks,
         )
 
-# ============================================================================
+# ⊢⊡⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊡⊣
 # V3 — SESSION ENGINE
-# ============================================================================
+# ⊢⊡⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊡⊣
 
 class SessionEngine:
     """The Voynich Phytoglyphica session engine.
@@ -1391,9 +1391,9 @@ class SessionEngine:
 
         return steps
 
-# ============================================================================
+# ⊢⊡⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊡⊣
 # V3 — TEXT GENERATION (statistically corrected)
-# ============================================================================
+# ⊢⊡⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊡⊣
 
 def _sample_len(dist: Counter, rng: random.Random) -> int:
     lengths = list(dist)
@@ -1528,9 +1528,9 @@ def _generate_word_v3(
 
     return word
 
-# ============================================================================
+# ⊢⊡⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊡⊣
 # RENDERING
-# ============================================================================
+# ⊢⊡⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊡⊣
 
 def render_shavian(words: list[list[int]], words_per_line: int = 8) -> str:
     lines: list[str] = []
@@ -1574,9 +1574,9 @@ def render_eva(words: list[list[int]], words_per_line: int = 8) -> str:
         lines.append('.'.join(buf))
     return '\n'.join(lines)
 
-# ============================================================================
+# ⊢⊡⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊡⊣
 # V3 — SEMANTIC SYNTHESIS (Herbs + Recipes with Session Engine)
-# ============================================================================
+# ⊢⊡⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊡⊣
 
 HERB_PREPARATIONS = [
     ('calcinatio (heating/roasting)', 0.22),
@@ -2114,9 +2114,9 @@ def render_session_record(record: MonographRecord) -> str:
 
     return '\n'.join(lines)
 
-# ============================================================================
+# ⊢⊡⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊡⊣
 # REPORTING
-# ============================================================================
+# ⊢⊡⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊡⊣
 
 def _pct(v: float, s: float) -> str:
     if v > 0:
@@ -2358,9 +2358,9 @@ def print_session_summary(engine: SessionEngine) -> None:
         for r in cold_records:
             print(f"    {r.plant_common} ({r.family}): Calefac applies to excipient only")
 
-# ============================================================================
+# ⊢⊡⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊡⊣
 # MAIN
-# ============================================================================
+# ⊢⊡⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊡⊣
 
 
 def print_plant_catalog(family: str | None = None, fmt: str = "table") -> None:
