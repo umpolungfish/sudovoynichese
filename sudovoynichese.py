@@ -31,7 +31,7 @@ from collections import Counter, defaultdict
 from pathlib import Path
 from typing import NamedTuple
 from dataclasses import dataclass, field
-from enum import Enum, auto
+from enum import Enum
 
 # ── IMSCRIBr imports ─────────────────────────────────────────────────────────
 sys.path.insert(0, str(Path(__file__).resolve().parent))
@@ -39,7 +39,7 @@ from classifier import compute_fingerprint, CANONICAL_FINGERPRINTS, match_canoni
 from tokens import Token
 
 # ⊢⊡⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊡⊣
-# COMPLETE EVA GLYPH INVENTORY 
+# COMPLETE EVA GLYPH INVENTORY  (preserved from v2)
 # ⊢⊡⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊡⊣
 
 EVA_GLYPHS: dict[str, tuple[int, str, str]] = {
@@ -263,7 +263,7 @@ def parse_ivtff(
     return dict(section_words)
 
 # ⊢⊡⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊡⊣
-# STATISTICS
+# STATISTICS (preserved from v2)
 # ⊢⊡⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊡⊣
 
 class CorpusStats(NamedTuple):
@@ -492,18 +492,18 @@ def section_fingerprint(words: list[list[int]]) -> tuple:
 # From ENGINE.md tables: EDA, E4, EDC, EDE, EDF, E7, E93, E92, E99, E26, E83, E9A
 
 class Primitive(Enum):
-    D = auto()   # ⊢ — registration depth
-    T = auto()   # ⊣ — plant material specification
-    R = auto()   # ≻ — pattern-completion class
-    P = auto()   # ≺ — solvent system
-    F = auto()   # ⋈ — concentration target
-    K = auto()   # ⊤ — extraction process
-    G = auto()   # ∈ — comminution
-    C = auto()   # ∋ — fraction combination
-    PHI = auto() # ⊙ — endpoint criterion
-    H = auto()   # ⊥ — clarification protocol
-    S = auto()   # ⊞ — drug:solvent ratio
-    W = auto()   # ⊡ — extraction cycles
+    D = '⊢'   # registration depth
+    T = '⊣'   # plant material specification
+    R = '≻'   # pattern-completion class
+    P = '≺'   # solvent system
+    F = '⋈'   # concentration target
+    K = '⊤'   # extraction process
+    G = '∈'   # comminution
+    C = '∋'   # fraction combination
+    PHI = '⊙' # endpoint criterion
+    H = '⊥'   # clarification protocol
+    S = '⊞'   # drug:solvent ratio
+    W = '⊡'   # extraction cycles
 
 # ── Primitive value tables (Shavian → pharmaceutical meaning) ──
 
