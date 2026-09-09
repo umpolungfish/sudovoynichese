@@ -1,51 +1,23 @@
 #!/usr/bin/env python3
 """
-pseudo_voynich_v3.py — Voynich Phytoglyphica Session Engine  [v3 — Ob3ect-Gated]
+pseudo_voynich_v3.py — Voynich Phytoglyphica session engine, v3 (ob3ect-gated)
 
-GENERATION WITH STRUCTURAL GATE VALIDATION.
+Reads the real transcription, learns each section's stats, and generates
+synthetic text in a different alphabet (EVA in, Shavian out). Herb
+monographs additionally get routed through three structural gates (see the
+ob3ect at ob3ect/digital/voynich_phytoglyphica_pharmaceutical_decoding_en/)
+before a recipe protocol gets elaborated for them.
 
-Every herb monograph is routed through three structural gates derived from the
-Voynich Phytoglyphica engine specification and formalized in the ob3ect at:
-  ob3ect/digital/voynich_phytoglyphica_pharmaceutical_decoding_en/
-
-The ob3ect encodes the pipeline as a 32-step IMASM bootstrap sequence:
-  VINIT → TANCH → load grammar → select monograph
-  → GATE 1 (FSPLIT→EVALT/EVALF): Pharmaceutical address
-  → GATE 2 (FSPLIT→EVALT/EVALF): Balneological heap
-  → GATE 3 (FSPLIT→EVALT/EVALF): Astronomical winding
-  → recipe extraction → IFIX record → loop → VINIT reset
-
-Each gate is a Frobenius-verified structural check (mu circ delta = id).
-The FSPLIT/FFUSE pair verifies: FFUSE(FSPLIT(monograph)) = monograph.
-
-NEW IN v3:
-  - Three-gate structural pipeline with FSPLIT/EVALT/EVALF/FFUSE routing
-  - Per-plant 12-primitive structural imscription (PharmaceuticalGrammar)
-  - Gate failure handling with AREV (re-route) and ENGAGR (ambiguous) paths
-  - IFIX output format recording gate validation status
-  - Protocol elaboration: every recipe step annotated with IG parameters
-  - Text generation drawn from the real section word pool at its real
-    frequencies (see generate_section_v3); the recency-reuse mechanism is gone
-  - Verification reads the sample-sensitive metrics matched-size, so a small
-    synthetic set is scored against the corpus subsampled to the same size
-  - Cold-process (E4=0x87) constraint enforcement from ENGINE.md
-
-Statistical signatures matched:
-  word-length distribution, Zipf slope, bigram entropy,
-  positional token constraints, section vocabulary separation (KL),
-  type-token ratio and local word-repetition rate (both read matched-size),
-  spectral gap.
-  Zipf slope, type-token ratio and repetition rate depend on the sample size:
-  a small draw looks more varied and less locally repetitive than the whole
-  book. The verification subsamples the corpus to the synthetic size before
-  reading these three, so it measures the generator and not the size gap. The
-  other metrics live on the token alphabet and are size-stable.
+v3 changes from v2: real per-section word pool instead of a recency-reuse
+hack, gate validation with Frobenius traces, matched-size verification
+(Zipf slope, TTR, and repetition rate move with sample size, so the
+comparison has to be apples to apples or it's just measuring the size gap).
 
 Usage:
-    python pseudo_voynich_v3.py PATH/TO/LSI_ivtff_0d.txt
-    python pseudo_voynich_v3.py PATH/TO/LSI_ivtff_0d.txt --session --plant "Artemisia absinthium L."
-    python pseudo_voynich_v3.py PATH/TO/LSI_ivtff_0d.txt --herbs 10 --session
-    python pseudo_voynich_v3.py PATH/TO/LSI_ivtff_0d.txt --section botanical --lines 200
+    python pseudo_voynich_v3.py LSI_ivtff_0d.txt
+    python pseudo_voynich_v3.py LSI_ivtff_0d.txt --session --plant "Artemisia absinthium L."
+    python pseudo_voynich_v3.py LSI_ivtff_0d.txt --herbs 10 --session
+    python pseudo_voynich_v3.py LSI_ivtff_0d.txt --section botanical --lines 200
 """
 
 from __future__ import annotations
@@ -105,11 +77,9 @@ EVA_GLYPHS: dict[str, tuple[int, str, str]] = {
 FALLBACK_TOKEN = 30
 FALLBACK_SHAVIAN = '\U0001046A'
 
-# A single EVA '?' marks one character the transcriber could see was there
-# but could not identify — a real, present, unknown glyph. That is a
-# different fact from FALLBACK_TOKEN (a recognized-but-uncatalogued glyph
-# sequence), so it gets its own token rather than being merged into either
-# FALLBACK_TOKEN or silently deleted.
+# '?' = a real glyph that's just illegible. Different situation from
+# FALLBACK_TOKEN (glyph sequence we don't recognize), so it gets its own
+# token instead of getting lumped in or dropped.
 UNCERTAIN_TOKEN = 31
 UNCERTAIN_SHAVIAN = '\U0001046C'
 
@@ -164,49 +134,27 @@ def classify_folio(folio: str) -> str:
 # ⊢⊡⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊡⊣
 # IVTFF PARSING
 #
-# The IVTFF format is genuinely interlinear: one physical manuscript line
-# can carry several parallel transcriptions, one per transcriber code
-# (<fNNN.UU.LL;T>, T an uppercase letter — see the file's own header,
-# section "Transcriber codes"), because different people transcribed
-# different, overlapping stretches of the manuscript and disagree on some
-# characters. Reading every ;T line as independent text — the v2/early-v3
-# behavior — counts the same physical line once per transcriber who
-# happened to cover it, which inflates word counts and corrupts every
-# frequency-based statistic by an amount that depends on transcriber
-# coverage, not on the manuscript. The fix is to choose ONE reading per
-# physical line (locus) and use only that one, so the corpus reflects the
-# manuscript's lines rather than the historical transcription effort.
+# The transcription is interlinear -- one manuscript line can have several
+# competing readings, one per transcriber (<fNNN.UU.LL;T>). Used to just
+# read every ;T line as its own text, which meant a line got counted once
+# per transcriber who happened to cover it. Now we keep one reading per
+# line (see DEFAULT_TRANSCRIBER_PRIORITY below) instead.
 #
-# Within a chosen line, three EVA markers carry real information the old
-# blanket character-class strip destroyed:
-#   '?'   one character the transcriber could see existed but could not
-#         identify — kept as UNCERTAIN_TOKEN, not deleted, so word length
-#         and position statistics still see a glyph there.
-#   ','   a "dubious word break" (vs '.', a definite one) — treated as a
-#         break like '.', not left to fall through into the glyph
-#         tokenizer, where it became a spurious FALLBACK_TOKEN glued into
-#         the middle of a word.
-#   <...> / {...}  inline editorial comments and annotations (e.g. an
-#         editor's guessed reading of a damaged character, a paragraph
-#         marker). These must be dropped as whole units before glyph
-#         tokenization — stripping only their bracket punctuation, as the
-#         old regex did, left real EVA letters typed inside the comment
-#         (an editor's guess, not confirmed text) to leak in as if they
-#         were part of the word.
-# '!' and '%' are alignment fillers used to pad parallel transcriptions to
-# the same length (the file's own header, section "Filler characters");
-# per that section a bare '!' denotes zero characters, so deleting it is
-# the documented reading, not an approximation.
+# A few EVA markers need care inside the chosen line:
+#   '?'  a character that's there but illegible -> UNCERTAIN_TOKEN, not
+#        dropped, so word length still makes sense
+#   ','  dubious word break, same as '.' -- used to leak through as a
+#        stray glyph mid-word
+#   <...> / {...}  editor comments/annotations, dropped whole. Used to
+#        only strip the brackets, so a guessed letter inside one would
+#        end up counted as real text
+# '!' and '%' are just alignment padding, deleting them is correct per the
+# file's own header.
 # ⊢⊡⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊡⊣
 
-# H is Takahashi's, the only complete transcription of the whole
-# manuscript; the rest are partial, page-by-page efforts by different
-# people, some (F, C) from the 1940s-70s with known transcription
-# disagreements the file's own header discusses. Preferring H, then the
-# editors who worked from it (U = Stolfi, N = Landini) before the older
-# partial sources gives the most internally consistent single reading per
-# line. Override with --transcriber-priority if a different source should
-# lead.
+# H (Takahashi) is the only complete transcription, so it leads. Then the
+# editors who built on it, then the older partial sources. Override with
+# --transcriber-priority if you want something else in front.
 DEFAULT_TRANSCRIBER_PRIORITY = [
     'H', 'U', 'N', 'Z', 'X', 'V', 'C', 'F', 'T', 'L', 'R', 'K', 'J', 'P',
     'D', 'G', 'I', 'Q', 'M',
@@ -265,13 +213,11 @@ def parse_ivtff(
     transcriber_priority: list[str] | None = None,
     report: dict | None = None,
 ) -> dict[str, list[list[int]]]:
-    """Parse an IVTFF transcription, choosing one reading per physical line.
+    """Parse an IVTFF transcription, one reading per physical line.
 
-    Each locus (folio + line/unit locator, independent of transcriber) is
-    kept once, using whichever available transcriber ranks highest in
-    `transcriber_priority`. If `report` is passed, it is filled with
-    {'loci': n, 'variant_lines_seen': n, 'variant_lines_dropped': n} so a
-    caller can show how much duplication was resolved.
+    Keeps whichever transcriber ranks highest per locus. `report`, if
+    given, gets filled with loci/variant_lines_seen/variant_lines_dropped
+    counts so the caller can print how much got collapsed.
     """
     priority = transcriber_priority or DEFAULT_TRANSCRIBER_PRIORITY
     rank = {code: i for i, code in enumerate(priority)}
@@ -1403,20 +1349,11 @@ def _sample_len(dist: Counter, rng: random.Random) -> int:
 
 P_POOL = 0.90  # fraction drawn from the real frequency-weighted word pool
 
-# With no recency mechanism at all, local repetition (window=10) undershoots
-# the real corpus by about half: measured at matched, real per-section sample
-# sizes, the pooled real corpus repeats at 0.071 (every section shows real,
-# independently-measured local repetition, from 0.027 to 0.114 — this is not
-# a pooling artifact), while pure i.i.d. draws from the frequency pool give
-# ~0.035. A v2 mechanism once corrected for this by echoing 30% of words from
-# the last ten emitted, but that number was tuned against the full, then
-# interlinear-duplicated corpus's repetition rate (~0.40), a figure that
-# collapsed once parse_ivtff stopped counting every transcriber's copy of
-# each line as separate text. Recalibrated against the real value: echoing a
-# word from the last ten at 4% of draws reproduces 0.071 directly, checked by
-# generating at real per-section size across several seeds and reading the
-# resulting rate, without moving Zipf slope or type-token ratio off their own
-# matched-size real values.
+# without this, local repetition comes out around 0.035 -- real corpus
+# is 0.071 (checked per-section, 0.027 to 0.114, not just a pooling
+# fluke). v2 had a 30%-echo mechanism for this but it was tuned against
+# the old (wrongly inflated, pre-dedup) repetition rate of ~0.40. 4% gets
+# us back to 0.071 without dragging Zipf/TTR off.
 P_RECENT_ECHO = 0.04
 RECENT_WINDOW = 10
 
@@ -1427,22 +1364,13 @@ def generate_section_v3(
     stats: CorpusStats,
     rng: random.Random,
 ) -> list[list[int]]:
-    """Generate synthetic Voynich text from the section's real word pool.
+    """Generate synthetic text from the section's real word pool.
 
-    The pool is the section's ENTIRE word-type vocabulary carrying its real
-    frequencies. Drawing n words from that multinomial reproduces the section's
-    type-token ratio and Zipf slope at any sample size n, because it is the same
-    distribution the real corpus is a draw from. A further tenth is fresh
-    bigram-generated words, which keeps the bigram entropy from collapsing onto
-    only the attested types and supplies the small novelty a real scribe adds.
-    A small remainder echoes a word from the last ten emitted, reproducing the
-    real corpus's own local repetition rate (see P_RECENT_ECHO above).
-
-    Mix:
-      - P_RECENT_ECHO (4%): repeat a word from the last ten emitted
-      - P_POOL of what remains (90%): frequency-weighted draw from the real
-        section vocabulary
-      - the rest: fresh word from the section bigram model
+    Mostly (P_POOL) a frequency-weighted draw from the section's real
+    vocabulary -- reproduces TTR and Zipf slope basically for free since
+    it's the same distribution. Small fraction from the bigram model for
+    novelty, small fraction echoing a recent word to get local repetition
+    right (P_RECENT_ECHO).
     """
     sec_vocab = stats.word_vocab.get(section)
     if not sec_vocab:
@@ -1879,10 +1807,8 @@ def load_recipe_model(path: str | Path) -> dict | None:
         start[steps[0]] += 1
         for s in steps:
             opcodes[s] += 1
-        # The last step is modelled separately (see generate_recipe): the
-        # interior chain is learned from the recipe with its terminal removed,
-        # so the walk never emits the terminal opcode and it is supplied once,
-        # by the terminal draw. Otherwise Compone is counted twice.
+        # last step handled separately in generate_recipe, otherwise
+        # Compone gets counted twice
         if len(steps) > 1:
             last[steps[-1]] += 1
             prefix = steps[:-1]
@@ -1976,11 +1902,8 @@ def generate_recipe(rng: random.Random, model: dict | None = None) -> dict:
         n_steps = _pick_counter(model['n_steps'], rng)
         cur = _pick_counter(model['start'], rng)
         seq = [cur]
-        # Walk the chain for the interior steps, then draw the final step from
-        # the real terminal distribution. Compone (compose to endpoint) is the
-        # last step of ~71% of recipes and is terminal in almost every one of
-        # its occurrences; a forward chain of fixed length undersamples it, so
-        # the terminal draw restores it.
+        # walk the interior, then draw the last step separately -- Compone
+        # ends ~71% of recipes and a plain forward chain undersamples that
         for _ in range(max(0, n_steps - 2)):
             row = model['trans'].get(cur)
             cur = _pick_counter(row, rng) if row else _pick_counter(model['opcodes'], rng)
@@ -2167,18 +2090,13 @@ def _verification_rows(
     s_words: dict[str, list[list[int]]],
     s_stats: CorpusStats,
 ) -> list[tuple[str, float, float]]:
-    """One realization's (name, voynich_value, synthetic_value) rows.
+    """(name, voynich_value, synthetic_value) rows for one realization.
 
-    Zipf slope, type-token ratio and local repetition rate all move with
-    sample size, so the real side is read on the corpus subsampled to the
-    synthetic size, averaged over several draws, rather than compared at
-    full corpus size against a much smaller synthetic sample.
-
-    KL divergence between two sections' unigram counts is likewise NOT
-    size-stable at the alphabet this corpus has (~30 token types) — the
-    same real pair, subsampled to a few hundred words, moves by more than
-    typical generator error. So it gets the same matched-size treatment,
-    read on the real corpus subsampled to each section's synthetic size.
+    Zipf/TTR/repetition rate move with sample size, so the real side gets
+    read on a subsample matched to the synthetic size instead of the full
+    corpus. Same deal for the KL rows -- turns out KL between two
+    sections isn't stable at this alphabet size either, so it gets the
+    same treatment.
     """
     v_all = [w for ws in v_words.values() for w in ws]
     s_all = [w for ws in s_words.values() for w in ws]
@@ -2240,20 +2158,12 @@ def print_verification(
 ) -> None:
     """Print the corpus/synthetic verification table.
 
-    A single small synthetic draw makes every one of these numbers as
-    noisy as the draw: at a few hundred words per section, KL divergence
-    between two sections moves by tens of percentage points from sampling
-    luck alone, real corpus included, checked directly by resampling the
-    real corpus at that size and watching the same statistic move.
-
-    Two changes from a single-shot reading: each section is regenerated at
-    its own real corpus size (matching sample size directly rather than
-    reading a small sample and correcting for the gap), and the whole
-    table is averaged over `n_seeds` independent draws, so what prints is
-    the generator's expected fidelity, not one draw's luck. The passed-in
-    `s_words`/`s_stats` are used only for the fingerprint and surface
-    notation comparisons below the table, which are not sample-size
-    sensitive the same way.
+    One small synthetic draw is noisy -- confirmed this by resampling the
+    real corpus at the same size and watching KL divergence swing by tens
+    of points on its own. So each section gets regenerated at its real
+    size and averaged over n_seeds draws instead of trusting one shot.
+    The s_words/s_stats args are just for the fingerprint/notation
+    comparisons further down, which don't have this problem.
     """
     print("\n=== VERIFICATION ===\n")
     common = [s for s in SECTIONS if v_words.get(s)]
@@ -2603,12 +2513,8 @@ V3 Session Engine:
         if args.section == "all":
             target_secs = active_secs
             total_v = sum(len(v_words.get(s, [])) for s in target_secs)
-            # Floor each section at 400 words. A section's KL divergence against
-            # the others is read on its token unigram, and a proportional slice
-            # of a small section (cosmological is one folio) yields too few words
-            # to estimate that unigram, which throws the KL rows off. 400 words
-            # is a few thousand tokens over a 12-31 symbol alphabet, enough for a
-            # stable unigram, and the large sections already sit well above it.
+            # floor at 400 words so tiny sections (cosmological is one
+            # folio) still get a usable unigram for the KL rows
             sec_counts = {
                 s: max(400, round(total_words * len(v_words.get(s, [])) / max(total_v, 1)))
                 for s in target_secs

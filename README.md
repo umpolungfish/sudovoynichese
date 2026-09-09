@@ -8,12 +8,12 @@ A generator that reproduces the Voynich manuscript's statistical fingerprint in 
 
 **Why it matters.** If a generator with no notation in common with the original still reproduces its statistical shape, that shape is a property of the underlying structure, not of which glyphs happen to carry it. That is the claim this script exists to check, section by section, run by run.
 
-**How to use it.** Python 3.10+, standard library only. `python3 pseudo_voynich_v3.py LSI_ivtff_0d.txt`
+**How to use it.** Python 3.10+, standard library only. `python3 sudovoynichese.py LSI_ivtff_0d.txt`
 
 ## Quick start
 
 ```
-python3 pseudo_voynich_v3.py LSI_ivtff_0d.txt
+python3 sudovoynichese.py LSI_ivtff_0d.txt
 ```
 
 Parses the corpus, prints the statistical fingerprint, generates synthetic text for all six manuscript sections (botanical, astronomical, cosmological, pharmaceutical, balneological, recipe), and ends with a verification table comparing the synthetic text back against the real corpus.
@@ -32,7 +32,7 @@ Useful flags:
 | `--list-plants` | Print the built-in plant catalog |
 | `--seed N` | Fix the random seed |
 
-Run `python3 pseudo_voynich_v3.py --help` for the rest.
+Run `python3 sudovoynichese.py --help` for the rest.
 
 ## The corpus
 
@@ -50,7 +50,7 @@ Current state: most rows land at 95-100% across repeated runs. The weakest are t
 
 | File | Role |
 |---|---|
-| `pseudo_voynich_v3.py` | The generator and CLI |
+| `sudovoynichese.py` | The generator and CLI |
 | `classifier.py`, `tokens.py` | IMASM structural fingerprinting, used to compare section fingerprints |
 | `LSI_ivtff_0d.txt`, `LSI_ivtff_0d_clean.txt` | The corpus |
 | `voynich_recipe_bio.json` | Recipe corpus backing `--recipes` |
