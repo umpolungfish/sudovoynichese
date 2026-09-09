@@ -934,14 +934,22 @@ class Gate2_BalneologicalHeap(Gate):
                     "predominantly closed"
                 )
         else:
-            checks['vessel_split'] = True
+            # Volatile transformation: ENGINE.md exempts this branch from the
+            # closure ratio entirely, no numeric constraint to test — recorded
+            # as a reason, not a check that could never fail.
             reasons.append("Volatile transformation — vessel closure constraint exempted")
 
-        # Cold-process constraint from ENGINE.md:
-        # "Cold maceration entries must never be heated"
+        # Cold-process constraint from ENGINE.md: a Calefac step under
+        # cold maceration reassigns to the excipient. Only applies if this
+        # entry's own recipe reaches a Calefac step at all — that's
+        # step_templates index 4, so n_ops < 5 never produces one.
         if k_val == '\U00010454':  # cold maceration
-            checks['cold_process'] = True
-            reasons.append("Cold-process constraint active: Calefac applies to excipient only")
+            has_calefac = n_ops >= 5
+            if has_calefac:
+                checks['cold_process'] = True
+                reasons.append(
+                    "Cold-process constraint active: Calefac applies to excipient only"
+                )
 
         all_pass = all(checks.values()) if checks else True
 
