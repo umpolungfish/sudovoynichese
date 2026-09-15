@@ -42,9 +42,9 @@ Run `python3 sudovoynichese.py --help` for the rest.
 
 ## Verification
 
-The table at the end of a run compares the synthetic text against the real corpus on five corpus-wide metrics (Zipf exponent, bigram entropy, type-token ratio, local repetition rate, spectral gap) and, for every pair of sections, whether the real gap between those two sections' vocabularies is reproduced in the synthetic text. Every real-side value is read at the same sample size as the synthetic side it's compared against — these statistics move with sample size, so comparing a small synthetic draw against the whole book measures the size gap, not the generator. The table is averaged over several independent generations (`--verify-seeds`) so what prints is the generator's expected fidelity, not one draw's luck.
+The table at the end of a run compares the synthetic text against the real corpus on five corpus-wide metrics (Zipf exponent, bigram entropy, type-token ratio, local repetition rate, spectral gap) and, for every pair of sections, whether the real gap between those two sections' vocabularies is reproduced in the synthetic text. Every real-side value is read at the same sample size as the synthetic side it's compared against - these statistics move with sample size, so comparing a small synthetic draw against the whole book measures the size gap, not the generator. The table is averaged over several independent generations (`--verify-seeds`) so what prints is the generator's expected fidelity, not one draw's luck.
 
-Current state: most rows land at 95-100% across repeated runs. The weakest are the pairs involving the cosmological section, which has only a few hundred words in the whole real corpus — a data-scarcity floor, not a generator defect.
+Current state: most rows land at 95-100% across repeated runs. The weakest are the pairs involving the cosmological section, which has only a few hundred words in the whole real corpus - a data-scarcity floor, not a generator defect.
 
 ## Files
 
